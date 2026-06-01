@@ -42,7 +42,7 @@
 | 理由 | 详细说明 |
 |------|---------|
 | **1. 页面稳定性匹配** | 你的页面相对稳定，不会频繁变化，这是LLM脚本方案的**最佳前提条件**。一旦生成脚本后，维护成本低。 |
-| **2. 流程复杂性优势** | 方案1生成的脚本代码可读性强，易于维护和审查。即使流程长且复杂，代码也能清晰表达各个流程节点的操作，便于团队���解和调整。 |
+| **2. 流程复杂性优势** | 方案1生成的脚本代码可读性强，易于维护和审查。即使流程长且复杂，代码也能清晰表达各个流程节点的操作，便于团队理解和调整。 |
 | **3. 字段多数据重** | 你的页面字段非常多。用LLM脚本方案，一次性将所有字段填充逻辑编码到脚本中，**比Vision方案的每步截图识别更高效**。 |
 | **4. 成本可控** | 相对Vision（每步截图）和AI代理方案（持续API调用），LLM脚本的**总体API调用成本最低**。 |
 | **5. 执行速度快** | 生成的脚本直接运行，**不依赖实时截图和LLM识别**，执行速度比Vision快5-10倍。 |
@@ -75,12 +75,45 @@ LLM解析和理解
 ```
 
 ### 核心技术栈
-- **LLM模型**：OpenAI GPT-4、Claude 3、Ollama本地模型
-- **脚本框架**：Playwright、Selenium、Pytest
-- **推荐项目**：
-  - [QA-GenAI-AutomationGenerator](https://github.com/meeviefranc/QA-GenAI-AutomationGenerator)
-  - [Auto_Test_Engine](https://github.com/XiaoyunDYX/Auto_Test_Engine)
-  - [Playwright_MCP_Framework](https://github.com/akhileshskl/Playwright_MCP_Framework)
+
+#### 推荐框架 (生产级，高星项目)
+
+| 框架 | Stars | 说明 | 推荐指数 |
+|------|-------|------|---------|
+| **[Playwright (官方)](https://github.com/microsoft/playwright-python)** | **14.7K⭐** | Microsoft官方Python实现，最稳定可靠 | ⭐⭐⭐⭐⭐ |
+| **[SeleniumBase](https://github.com/seleniumbase/SeleniumBase)** | **12.7K⭐** | 完整框架，包含Playwright/Selenium/POM支持 | ⭐⭐⭐⭐⭐ |
+| **[PyTest](https://docs.pytest.org/)** | N/A | 业界标准测试框架，与Playwright完美配合 | ⭐⭐⭐⭐⭐ |
+| **[Robot Framework](https://github.com/robotframework/robotframework)** | 11.7K⭐ | 关键字驱动，企业级广泛应用 | ⭐⭐⭐⭐ |
+| **[Splinter](https://github.com/cobrateam/splinter)** | 2.7K⭐ | 简洁易用的Web自动化框架 | ⭐⭐⭐⭐ |
+
+#### LLM模型
+
+- **Claude 3 (推荐)**: 便宜20%，代码生成能力强
+- **GPT-4**: 稳定可靠，社区文档丰富
+- **Ollama本地模型**: 完全离线，隐私最优
+
+#### 推荐技术组合
+
+```
+┌────────────────────────────────────────┐
+│ 最优生产级技术栈                        │
+├────────────────────────────────────────┤
+│                                        │
+│ Web自动化:     Playwright (14.7K⭐)   │
+│                                        │
+│ 测试框架:      PyTest                 │
+│                                        │
+│ 工具库:        SeleniumBase (12.7K⭐)│
+│               (POM + 辅助工具)        │
+│                                        │
+│ 脚本生成:      Claude 3 API           │
+│                                        │
+│ CI/CD:         GitHub Actions         │
+│                                        │
+│ 报告:          Pytest-HTML + Allure  │
+│                                        │
+└────────────────────────────────────────┘
+```
 
 ### ✅ 优点
 
@@ -94,11 +127,11 @@ LLM解析和理解
 | **标准化** | 生成的脚本遵循最佳实践（POM、断言等） |
 | **离线可用** | 使用Ollama等本地LLM时完全离线 |
 
-### ✅ 针对您业务场景的特殊优势
+### ✅ 针对您业务场景的���殊优势
 
 | 优势 | 说明 |
 |------|------|
-| **字段填充效率��** | 对于字段多的页面，脚本可以完整定义所有字段的填充逻辑，一次生成，无需重复识别 |
+| **字段填充效率高** | 对于字段多的页面，脚本可以完整定义所有字段的填充逻辑，一次生成，无需重复识别 |
 | **流程复杂性友好** | 长流程用脚本表达更清晰，可以通过函数模块化处理每个节点 |
 | **稳定页面优化** | 页面稳定意味着定位器少变化，脚本的维护成本极低 |
 | **企业级可控性** | 生成的代码便于code review、版本控制、CI/CD集成 |
@@ -211,31 +244,32 @@ LLM解析和理解
       │  LLM (Claude)   │ ← 推荐Claude而非GPT-4
       └────────┬────────┘
                │
-      ┌────────▼──────────────┐
-      │ 生成Playwright脚本    │ ← 推荐Playwright
-      │ (Python/TypeScript)  │    - 更快执行
-      └────────┬──────────────┘    - 更好IDE支持
+      ┌────────▼──────────────────┐
+      │ 生成Playwright脚本         │ ← 推荐Playwright (14.7K⭐)
+      │ + SeleniumBase工具库       │   - 官方维护，最稳定
+      │ (Python)                  │   - 执行最快
+      └────────┬──────────────────┘   - 社区最大
                │
-      ┌────────▼──────────────┐
-      │ POM + 数据驱动        │ ← 模块化管理
-      │ - Page Objects       │    长流程
-      │ - Test Data          │
-      │ - Common Utils       │
-      └────────┬──────────────┘
+      ┌────────▼───────────────��──┐
+      │ POM + 数据驱动            │ ← 模块化管理
+      │ - Page Objects            │    长流程
+      │ - Test Data               │    字段多
+      │ - Common Utils            │
+      └────────┬──────────────────┘
                │
-      ┌────────▼──────────────┐
-      │ pytest框架            │
-      │ - 断言机制            │
-      │ - 参数化测试          │
-      │ - 插件系统            │
-      └────────┬──────────────┘
+      ┌────────▼──────────────────┐
+      │ pytest框架                │
+      │ - 断言机制                │
+      │ - 参数化测试              │
+      │ - 插件系统                │
+      └────────┬──────────────────┘
                │
-      ┌────────▼──────────────┐
-      │ CI/CD集成             │
-      │ - 定时执行            │
-      │ - 结果报告            │
-      │ - 告警通知            │
-      └──────────────────────┘
+      ┌────────▼──────────────────┐
+      │ CI/CD集成                 │
+      │ - 定时执行                │
+      │ - 结果报告                │
+      │ - 告警通知                │
+      └──────────────────────────┘
 ```
 
 ### 💡 成功要点
@@ -379,7 +413,7 @@ AI代理分析和规划
 - **LLM**：Claude、GPT-4、Ollama
 - **浏览器接口**：CDP（Chrome DevTools Protocol）、Playwright API
 - **推荐项目**：
-  - [nanobrowser](https://github.com/nanobrowser/nanobrowser) - 13K⭐ (Chrome扩展)
+  - [nanobrowser](https://github.com/nanobrowser/nanobrowser) - 13K��� (Chrome扩展)
   - [AIPex](https://github.com/AIPexStudio/AIPex) - 1.2K⭐
   - [browserable](https://github.com/browserable/browserable) - 1.2K⭐
   - [bowser](https://github.com/disler/bowser) - 241⭐
@@ -476,7 +510,7 @@ AI代理分析和规划
 ### 核心技术栈
 - **核心框架**：MaaFramework
 - **图像处理**：OpenCV、PIL
-- **���别算法**：模板匹配、特征检测、OCR
+- **识别算法**：模板匹配、特征检测、OCR
 - **推荐项目**：
   - [MaaFramework](https://github.com/MaaXYZ/MaaFramework) - 4.1K⭐
 
@@ -742,6 +776,92 @@ Vision方案 (方案2)  ███░░░░░░░  中等偏陡
 
 ---
 
+## 📚 生产级开源项目参考
+
+### 核心框架（生产级，高星项目）
+
+#### 🥇 最推荐：Playwright (14.7K⭐)
+```
+项目: Microsoft Playwright Python
+链接: https://github.com/microsoft/playwright-python
+Stars: 14,700+
+维护: Microsoft官方活跃维护
+说明: 官方Python实现，业界标准
+优点:
+  ✅ 最稳定可靠，用于生产环境
+  ✅ 支持Chromium、Firefox、WebKit
+  ✅ 社区最大，文档最全
+  ✅ 性能最优
+  ✅ 官方支持，问题解决快
+```
+
+#### 🥈 完整框架：SeleniumBase (12.7K⭐)
+```
+项目: SeleniumBase
+链接: https://github.com/seleniumbase/SeleniumBase
+Stars: 12,752+
+维护: 社区活跃维护
+说明: Python全能测试框架
+优点:
+  ✅ 包含Playwright/Selenium/CDP三种模式
+  ✅ 内置POM (Page Object Model)
+  ✅ 支持Pytest，开箱即用
+  ✅ 内置录制回放功能
+  ✅ 完整文档和大量示例
+  ✅ 长期活跃维护
+推荐: 如果需要完整解决方案，首选SeleniumBase
+```
+
+#### 🥉 简洁框架：Splinter (2.7K⭐)
+```
+项目: Splinter
+链接: https://github.com/cobrateam/splinter
+Stars: 2,760+
+维护: 社区维护
+说明: Python简洁Web自动化框架
+优点:
+  ✅ API简洁易用
+  ✅ 支持多个驱动
+  ✅ 学习曲线低
+```
+
+### 测试框架
+
+#### PyTest (业界标准)
+```
+项目: PyTest
+链接: https://docs.pytest.org/
+说明: Python事实上的标准测试框架
+优点:
+  ✅ 与Playwright完美配合
+  ✅ 社区最大
+  ✅ 功能最全
+```
+
+#### Robot Framework (11.7K⭐)
+```
+项目: Robot Framework
+链接: https://github.com/robotframework/robotframework
+Stars: 11,700+
+说明: 关键字驱动框架，企业级广泛应用
+优点:
+  ✅ 关键字驱动，流程清晰
+  ✅ 对非编程人员友好
+  ✅ 企业级应用广泛
+推荐: 如果需要关键字驱动方式
+```
+
+### 相关工具
+
+#### 高星项目推荐
+
+| 项目 | Stars | 说明 |
+|------|-------|------|
+| **[pydoll](https://github.com/autoscrape-labs/pydoll)** | 6.8K⭐ | 高级Playwright封装，反爬虫 |
+| **[testzeus-hercules](https://github.com/test-zeus-ai/testzeus-hercules)** | 1.0K⭐ | AI测试代理，Playwright集成 |
+
+---
+
 ## 📝 总结
 
 | 维度 | 最优方案 |
@@ -762,6 +882,15 @@ Vision方案 (方案2)  ███░░░░░░░  中等偏陡
 
 **采用方案1 (LLM脚本) 作为主要方案**
 
+**技术栈推荐：**
+```
+├─ Web自动化：Playwright (14.7K⭐) [官方Microsoft维护]
+├─ 测试框架：PyTest [业界标准]
+├─ 工具库：SeleniumBase (12.7K⭐) [POM + 辅助工具]
+├─ 脚本生成：Claude 3 API [便宜+高效]
+└─ CI/CD：GitHub Actions
+```
+
 **理由总结：**
 1. 页面稳定性完美匹配LLM脚本的前置条件
 2. 长流程用代码表达最清晰，维护成本最低
@@ -769,6 +898,7 @@ Vision方案 (方案2)  ███░░░░░░░  中等偏陡
 4. 总体成本比其他方案低30-50%
 5. 执行速度快5-10倍，适合频繁测试
 6. 企业级可控性和代码审核最友好
+7. **所有推荐项目都是生产级高星项目**
 
 ---
 
@@ -776,20 +906,24 @@ Vision方案 (方案2)  ███░░░░░░░  中等偏陡
 
 ### 推荐阅读（针对方案1）
 
-#### 工具和框架
-- **Playwright官方文档**: https://playwright.dev/
-- **Pytest测试框架**: https://docs.pytest.org/
-- **Claude API文档**: https://claude.ai/docs
-- **Page Object Model模式**: https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/
+#### 框架官方文档
+- **Playwright官方文档**: https://playwright.dev/python/
+- **SeleniumBase官方文档**: https://seleniumbase.io/
+- **PyTest官方文档**: https://docs.pytest.org/
+- **Robot Framework官方文档**: https://robotframework.org/
 
-#### 高星项目参考
-- **QA-GenAI-AutomationGenerator**: https://github.com/meeviefranc/QA-GenAI-AutomationGenerator
-- **Auto_Test_Engine**: https://github.com/XiaoyunDYX/Auto_Test_Engine
-- **Playwright_MCP_Framework**: https://github.com/akhileshskl/Playwright_MCP_Framework
+#### Page Object Model最佳实践
+- **Selenium POM指南**: https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/
+- **Playwright POM示例**: https://playwright.dev/python/docs/pom
 
-#### 最佳实践
-- **Python测试自动化最佳实践**: https://docs.pytest.org/en/latest/goodpractices.html
-- **Playwright测试最佳实践**: https://playwright.dev/python/docs/best-practices
+#### Claude API集成
+- **Claude API文档**: https://anthropic.com/docs/api
+- **Claude用于代码生成**: https://anthropic.com/docs/use-cases/code
+
+#### 高星项目文档
+- **Playwright-Python**: https://github.com/microsoft/playwright-python
+- **SeleniumBase**: https://github.com/seleniumbase/SeleniumBase
+- **Splinter**: https://github.com/cobrateam/splinter
 
 ### 成本计算器
 
@@ -840,7 +974,7 @@ costs = estimate_annual_cost(100, 100)
 
 ### 更新时间
 - 生成时间：2026-06-01
-- 最后更新：2026-06-01 (加入业务场景分析和推荐)
+- 最后更新：2026-06-01 (修正为生产级高星项目推荐)
 - 基于GitHub最新搜索数据和行业最佳实践
 
 ---
